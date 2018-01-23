@@ -15,10 +15,8 @@ import java.util.concurrent.TimeUnit;
 
 public class RpcExporter {
 
-  static Executor executor;
-
   public static void exporter(String hostName, int port) throws Exception {
-    BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(20);
+    BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(20);
     ThreadFactory threadFactory = new ThreadFactory() {
       private int count = 0;
 
@@ -32,7 +30,8 @@ public class RpcExporter {
         return thread;
       }
     };
-    executor = new ThreadPoolExecutor(10, 20, 1000, TimeUnit.SECONDS, queue, threadFactory);
+    Executor executor = new ThreadPoolExecutor(10, 20, 1000, TimeUnit.SECONDS, queue,
+        threadFactory);
     ServerSocket server = new ServerSocket();
     server.bind(new InetSocketAddress(hostName, port));
     try {
