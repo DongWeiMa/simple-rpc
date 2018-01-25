@@ -1,7 +1,13 @@
 package com.dongweima.rpc.server;
 
+import com.dongweima.rpc.common.ByteSocketReadUtil;
+import com.dongweima.rpc.common.RpcDTO;
+import com.dongweima.rpc.serializer.Serialize;
+import com.dongweima.rpc.serializer.SerializeEnum;
+import com.dongweima.rpc.serializer.SerializeFactory;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -13,6 +19,9 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author dongweima
+ */
 public class RpcExporter {
 
   public static void exporter(String hostName, int port) throws Exception {
@@ -36,7 +45,8 @@ public class RpcExporter {
     server.bind(new InetSocketAddress(hostName, port));
     try {
       while (true) {
-        executor.execute(new ExporterTask(server.accept()));
+        Serialize serialize = SerializeFactory.getSerialize(SerializeEnum.FASTJSON);
+        executor.execute(new ExporterTask(server.accept(), serialize));
       }
     } finally {
 
@@ -45,32 +55,30 @@ public class RpcExporter {
 
   private static class ExporterTask implements Runnable {
 
-    Socket client = null;
+    private Serialize serialize;
+    private Socket client = null;
+    private static byte[] a = {(byte)-1} ;
 
-    ExporterTask(Socket client) {
+    ExporterTask(Socket client, Serialize serialize) {
       this.client = client;
+      this.serialize = serialize;
     }
 
     @Override
     public void run() {
-      ObjectInputStream in = null;
-      ObjectOutputStream out = null;
+      InputStream in = null;
+      OutputStream out = null;
       try {
-        in = new ObjectInputStream(client.getInputStream());
+        in = client.getInputStream();
+        byte[] bs = ByteSocketReadUtil.read(in);
+        RpcDTO dto = serialize.deserialize(bs, RpcDTO.class);
+        Class<?> service = Class.forName( dto.getInterfaceName());
+        Method method = service.getMethod(dto.getMethodName(), dto.getParameterTypes());
+        Object result = method.invoke(service.newInstance(), dto.getParams());
+        out = client.getOutputStream();
+        out.write(serialize.serialize(result));
+        out.flush();
         
-        String interfaceName = in.readUTF();
-
-        Class<?> service = Class.forName(interfaceName);
-
-        String methodName = in.readUTF();
-        Class<?>[] parameterTypes = (Class<?>[]) in.readObject();
-
-
-        Object[] params = (Object[]) in.readObject();
-        Method method = service.getMethod(methodName, parameterTypes);
-        Object result = method.invoke(service.newInstance(), params);
-        out = new ObjectOutputStream(client.getOutputStream());
-        out.writeObject(result);
       } catch (Exception e) {
         e.printStackTrace();
       } finally {
@@ -83,7 +91,7 @@ public class RpcExporter {
         }
         if (out != null) {
           try {
-            out.close();
+           out.close();
           } catch (Exception e) {
             e.printStackTrace();
           }
