@@ -2,11 +2,10 @@ package com.dongweima.rpc.serializer.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.dongweima.rpc.common.RpcDTO;
+import com.dongweima.rpc.common.dto.RpcDTO;
 import com.dongweima.rpc.serializer.Serialize;
 import com.dongweima.rpc.serializer.SerializeEnum;
 import com.dongweima.rpc.serializer.SerializeFactory;
-import java.io.ObjectInputStream;
 
 /**
  * @author dongweima create on 2018/1/24 1:02.
