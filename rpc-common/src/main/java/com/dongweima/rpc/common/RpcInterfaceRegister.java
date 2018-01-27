@@ -40,4 +40,14 @@ public class RpcInterfaceRegister {
   public void setImplementClassName(String implementClassName) {
     this.implementClassName = implementClassName;
   }
+
+  @Override
+  public String toString() {
+    return "RpcInterfaceRegister{" +
+        "group='" + group + '\'' +
+        ", version='" + version + '\'' +
+        ", intefaceName='" + intefaceName + '\'' +
+        ", implementClassName='" + implementClassName + '\'' +
+        '}';
+  }
 }

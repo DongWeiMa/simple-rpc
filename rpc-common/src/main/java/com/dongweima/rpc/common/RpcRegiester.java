@@ -1,6 +1,7 @@
 package com.dongweima.rpc.common;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -28,4 +29,15 @@ public class RpcRegiester {
     return interfaceName + group + version;
   }
 
+  @Override
+  public String toString() {
+    StringBuilder stringBuilder = new StringBuilder("RpcRegiester{\n");
+    for(Entry<String, RpcInterfaceRegister> entry: map.entrySet()){
+      stringBuilder.append(entry.getKey()).append(":");
+      stringBuilder.append(entry.getValue().toString());
+      stringBuilder.append(",\n");
+    }
+    stringBuilder.append("}");
+    return stringBuilder.toString();
+  }
 }
