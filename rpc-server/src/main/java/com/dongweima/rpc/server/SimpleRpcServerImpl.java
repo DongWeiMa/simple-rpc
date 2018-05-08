@@ -17,56 +17,55 @@ import java.net.Socket;
 import java.util.Collection;
 import java.util.Random;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author dongweima
  */
 public class SimpleRpcServerImpl extends AbstractRpcServer<Socket> {
 
+  private static final Logger logger = LoggerFactory.getLogger(SimpleRpcServerImpl.class);
   private Set<Integer> ports = new ConcurrentSet<>();
   @Override
   public void register(int threadNumber, RpcRegiester rpcRegiester) {
     this.setRpcRegiester(rpcRegiester);
     this.setExecutor(ExecutorFactory.getExecutor(threadNumber));
     for (int i = 0; i < threadNumber; i++) {
-      Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-          //多线程去跑
-          try {
-            ServerSocket server = new ServerSocket();
-            Collection<RpcInterfaceRegister> interfaceRegisters = getRpcRegiester().getAll();
-            //port 随机生成 在10000-20000
-            Random random = new Random();
-            for (RpcInterfaceRegister interfaceRegister : interfaceRegisters) {
-              Entity entity = new Entity();
-              String host = AddressUtil.getIntranetIp();
-              Integer port = random.nextInt(20000);
-              while (ports.contains(port) || port < 10000) {
-                port = random.nextInt(20000);
-              }
-              server.bind(new InetSocketAddress(host, port));
-
-              entity.setType(PROVIDER);
-              entity.setNode(host + ":" + port);
-              entity.setService(
-                  interfaceRegister.getIntefaceName() + ":"
-                      + interfaceRegister.getGroup() + ":"
-                      + interfaceRegister.getVersion());
-              getZookeeperRegistry().register(entity);
-              Thread.currentThread().setName(host + ":" + port);
-              System.out.println("rpc server start in " + host + ":" + port);
+      getExecutor().execute(() -> {
+        //多线程去跑
+        try {
+          ServerSocket server = new ServerSocket();
+          Collection<RpcInterfaceRegister> interfaceRegisters = getRpcRegiester().getAll();
+          //port 随机生成 在10000-20000
+          Random random = new Random();
+          for (RpcInterfaceRegister interfaceRegister : interfaceRegisters) {
+            Entity entity = new Entity();
+            String host = AddressUtil.getIntranetIp();
+            Integer port = random.nextInt(20000);
+            while (ports.contains(port) || port < 10000) {
+              port = random.nextInt(20000);
             }
+            server.bind(new InetSocketAddress(host, port));
 
-            while (true) {
-              resolveRpcClientRequest(server.accept());
-            }
-          } catch (Exception e) {
-            e.printStackTrace();
+            entity.setType(PROVIDER);
+            entity.setNode(host + ":" + port);
+            entity.setService(
+                interfaceRegister.getIntefaceName() + ":"
+                    + interfaceRegister.getGroup() + ":"
+                    + interfaceRegister.getVersion());
+            getZookeeperRegistry().register(entity);
+            Thread.currentThread().setName(host + ":" + port);
+            logger.debug("rpc server start in{}:{} ", host, port);
           }
+
+          while (true) {
+            resolveRpcClientRequest(server.accept());
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
         }
-      };
-      getExecutor().execute(runnable);
+      });
     }
 
   }
@@ -108,14 +107,14 @@ public class SimpleRpcServerImpl extends AbstractRpcServer<Socket> {
           try {
             out.close();
           } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("outstream close fail.", e);
           }
         }
         if (client != null) {
           try {
             client.close();
           } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("client close fail.", e);
           }
         }
 

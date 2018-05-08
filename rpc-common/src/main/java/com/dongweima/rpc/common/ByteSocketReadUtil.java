@@ -2,12 +2,16 @@ package com.dongweima.rpc.common;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * 字节流读取工具
  * @author dongweima
  */
 public class ByteSocketReadUtil {
 
+  private static final Logger logger = LoggerFactory.getLogger(ByteSocketReadUtil.class);
   private ByteSocketReadUtil() {
 
   }
@@ -23,15 +27,6 @@ public class ByteSocketReadUtil {
       }
     }
     return  outSteam.toByteArray();
-  }
-
-  public static void main(String[] args) {
-    byte a = -1;
-    int b = -1;
-    System.out.println(a);
-    System.out.println(b);
-    System.out.println((byte) b);
-    System.out.println((int) a);
   }
 
 }

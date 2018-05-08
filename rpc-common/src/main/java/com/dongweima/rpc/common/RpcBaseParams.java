@@ -2,9 +2,11 @@ package com.dongweima.rpc.common;
 
 /**
  * 不是按照方法级别注册,而是按照类级别注册.
- * @author dongweima create on 2018/1/27 12:15.
+ *
+ * @author dongweima
  */
 public class RpcBaseParams {
+
   private String interfaceName;
   private String group;
   private String version;

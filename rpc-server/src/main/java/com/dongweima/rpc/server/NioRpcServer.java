@@ -8,12 +8,15 @@ import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author dongweima
  */
 public class NioRpcServer extends AbstractRpcServer<SocketChannel> {
 
+  private static final Logger logger = LoggerFactory.getLogger(NioRpcServer.class);
   @Override
   public void register(int port, RpcRegiester rpcRegiester) {
     this.setRpcRegiester( rpcRegiester);
@@ -25,7 +28,7 @@ public class NioRpcServer extends AbstractRpcServer<SocketChannel> {
         server.setOption(StandardSocketOptions.SO_RCVBUF, 128);
         server.setOption(StandardSocketOptions.SO_REUSEADDR, true);
         server.bind(new InetSocketAddress("127.0.0.1", 8080));
-        System.out.println("rpc server start");
+        logger.debug("rpc server start");
         while (true) {
           resolveRpcClientRequest(server.accept());
         }

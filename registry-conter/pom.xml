@@ -9,29 +9,25 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>demo-client</artifactId>
+  <artifactId>registry-conter</artifactId>
 
   <dependencies>
     <dependency>
-      <groupId>com.dongweima.rpc</groupId>
-      <artifactId>rpc-client</artifactId>
+      <groupId>org.apache.zookeeper</groupId>
+      <artifactId>zookeeper</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.dongweima.rpc</groupId>
-      <artifactId>demo-server</artifactId>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-framework</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-recipes</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.nbugs.disconf.start</groupId>
+      <artifactId>disconf</artifactId>
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

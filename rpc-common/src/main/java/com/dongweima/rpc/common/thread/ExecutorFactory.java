@@ -8,7 +8,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author dongweima create on 2018/1/26 0:49.
+ * todo 参数不要写死
+ * @author dongweima
  */
 public class ExecutorFactory {
 
@@ -19,6 +20,7 @@ public class ExecutorFactory {
         threadFactory);
   }
 
+  //todo 上次 corePoolSize 设置为threadNumber ，max设置为threadNumber+20，发现线程没有自动创建，导致卡死，socker 只接受连接，但是分不出线程处理.
   public static Executor getExecutor(int threadNumber) {
     BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(threadNumber + 30);
     ThreadFactory threadFactory = new RpcThreadFactory();

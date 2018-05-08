@@ -12,18 +12,23 @@
   <dependencies>
     <dependency>
       <groupId>com.dongweima.rpc</groupId>
+      <artifactId>registry-conter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.dongweima.rpc</groupId>
       <artifactId>serializer</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.dongweima.rpc</groupId>
       <artifactId>rpc-common</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.dongweima.rpc</groupId>
       <artifactId>rpc-io</artifactId>
-      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
     </dependency>
     
   </dependencies>

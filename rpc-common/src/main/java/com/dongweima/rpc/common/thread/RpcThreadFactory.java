@@ -3,7 +3,7 @@ package com.dongweima.rpc.common.thread;
 import java.util.concurrent.ThreadFactory;
 
 /**
- * @author dongweima create on 2018/1/26 0:47.
+ * @author dongweima
  */
 public class RpcThreadFactory implements ThreadFactory {
 

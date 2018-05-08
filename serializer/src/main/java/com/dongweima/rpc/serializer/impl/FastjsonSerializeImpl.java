@@ -11,18 +11,7 @@ import com.dongweima.rpc.serializer.SerializeFactory;
  * @author dongweima create on 2018/1/24 1:02.
  */
 public class FastjsonSerializeImpl implements Serialize {
-
-  @Override
-  public <T> byte[] serialize(T obj) {
-    JSON.DEFFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    return JSON.toJSONBytes(obj, SerializerFeature.WriteDateUseDateFormat);
-  }
-
-  @Override
-  public <T> T deserialize(byte[] data, Class<T> clazz) {
-    return JSON.parseObject(new String(data), clazz);
-  }
-
+  
   public static void main(String[] args) {
     RpcDTO rpcDTO = new RpcDTO();
     rpcDTO.setMethodName("sss");
@@ -34,6 +23,17 @@ public class FastjsonSerializeImpl implements Serialize {
     Serialize serialize = SerializeFactory.getSerialize(SerializeEnum.FASTJSON);
     byte[] bytes = serialize.serialize(rpcDTO);
     RpcDTO s = serialize.deserialize(bytes, RpcDTO.class);
-    System.out.println(s);
+
+  }
+
+  @Override
+  public <T> byte[] serialize(T obj) {
+    JSON.DEFFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    return JSON.toJSONBytes(obj, SerializerFeature.WriteDateUseDateFormat);
+  }
+
+  @Override
+  public <T> T deserialize(byte[] data, Class<T> clazz) {
+    return JSON.parseObject(new String(data), clazz);
   }
 }
