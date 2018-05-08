@@ -20,10 +20,10 @@ public class FastjsonSerializeImpl implements Serialize {
 
   @Override
   public <T> T deserialize(byte[] data, Class<T> clazz) {
-    return JSON.parseObject(new String(data),clazz);
+    return JSON.parseObject(new String(data), clazz);
   }
 
-  public static void main(String[] args){
+  public static void main(String[] args) {
     RpcDTO rpcDTO = new RpcDTO();
     rpcDTO.setMethodName("sss");
     rpcDTO.setInterfaceName("dadsa");
@@ -33,7 +33,7 @@ public class FastjsonSerializeImpl implements Serialize {
     rpcDTO.setParameterTypes(c);
     Serialize serialize = SerializeFactory.getSerialize(SerializeEnum.FASTJSON);
     byte[] bytes = serialize.serialize(rpcDTO);
-    RpcDTO s = serialize.deserialize(bytes,RpcDTO.class);
+    RpcDTO s = serialize.deserialize(bytes, RpcDTO.class);
     System.out.println(s);
   }
 }

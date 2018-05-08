@@ -18,4 +18,12 @@ public class ExecutorFactory {
     return new ThreadPoolExecutor(10, 20, 1000, TimeUnit.SECONDS, queue,
         threadFactory);
   }
+
+  public static Executor getExecutor(int threadNumber) {
+    BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(threadNumber + 30);
+    ThreadFactory threadFactory = new RpcThreadFactory();
+    return new ThreadPoolExecutor(threadNumber + 20, threadNumber + 30, 1000, TimeUnit.SECONDS,
+        queue,
+        threadFactory);
+  }
 }
